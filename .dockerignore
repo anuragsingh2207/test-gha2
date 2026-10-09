@@ -1,0 +1,14 @@
+.git
+.github
+.pytest_cache
+.ruff_cache
+.venv
+__pycache__
+tests
+*.py[cod]
+.coverage*
+htmlcov
+.env*
+*.md
+requirements-dev.txt
+pyproject.toml
