@@ -8,6 +8,20 @@ from fastapi.testclient import TestClient
 from app.main import app, create_github_client, get_github_client
 
 
+def test_github_client_reads_optional_environment_configuration(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("GITHUB_API_BASE_URL", "https://github.example")
+    monkeypatch.setenv("GITHUB_TOKEN", "test-token")
+
+    github_client = create_github_client()
+    try:
+        assert str(github_client.base_url) == "https://github.example"
+        assert github_client.headers["Authorization"] == "Bearer test-token"
+    finally:
+        asyncio.run(github_client.aclose())
+
+
 @pytest.fixture
 def client_factory() -> Iterator[Callable[[httpx.MockTransport], TestClient]]:
     clients: list[httpx.AsyncClient] = []
@@ -47,6 +61,18 @@ def test_returns_public_gists_for_user(
     assert requests[0].url.params["per_page"] == "100"
     assert requests[0].url.params["page"] == "1"
     assert requests[0].headers["X-GitHub-Api-Version"] == "2022-11-28"
+
+
+def test_returns_empty_list_when_user_has_no_gists(
+    client_factory: Callable[[httpx.MockTransport], TestClient],
+) -> None:
+    transport = httpx.MockTransport(lambda _: httpx.Response(200, json=[]))
+
+    with client_factory(transport) as client:
+        response = client.get("/octocat")
+
+    assert response.status_code == 200
+    assert response.json() == []
 
 
 def test_fetches_every_gist_page(

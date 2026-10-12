@@ -15,6 +15,15 @@ uvicorn app.main:app --host 0.0.0.0 --port 8080
 
 Request `GET http://localhost:8080/octocat`. The response is the GitHub Gists JSON array. The service fetches all pages from GitHub; no GitHub token is required for public Gists. `GET /health` is available for health checks.
 
+Optional environment configuration:
+
+```sh
+export GITHUB_TOKEN=your-github-token
+export GITHUB_API_BASE_URL=https://api.github.com
+```
+
+`GITHUB_TOKEN` can be set to provide authenticated GitHub API access and higher rate limits. `GITHUB_API_BASE_URL` defaults to `https://api.github.com`.
+
 ## Tests and checks
 
 ```sh
@@ -54,3 +63,5 @@ GitHub Actions runs the tests and static checks, audits Python dependencies with
 - Enforce a minimum test coverage threshold and run linting and static security checks.
 - Use a multi-stage container build, run the service as a non-root user, and exclude development files from the image build context.
 - Check dependencies, the built container image, and repository history in CI for known vulnerabilities and hardcoded credentials.
+- Read GitHub API credentials and endpoint configuration from environment variables rather than embedding them in source code.
+- Log upstream failures with the affected username and page to help diagnose operational issues.
