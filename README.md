@@ -43,3 +43,14 @@ the build context.
 ## CI security checks
 
 GitHub Actions runs the tests and static checks, audits Python dependencies with `pip-audit`, scans the built image for known vulnerabilities with Trivy, and scans repository history for hardcoded credentials with Gitleaks.
+
+## Best practices followed
+
+- Keep the service focused and use FastAPI with asynchronous HTTP requests to GitHub.
+- Validate GitHub usernames before making upstream requests.
+- Configure request timeouts and return explicit errors for GitHub failures, rate limits, and invalid responses.
+- Retrieve all Gist pages rather than silently limiting results to the first page.
+- Test API behavior with a mocked GitHub transport, avoiding network access and credentials.
+- Enforce a minimum test coverage threshold and run linting and static security checks.
+- Use a multi-stage container build, run the service as a non-root user, and exclude development files from the image build context.
+- Check dependencies, the built container image, and repository history in CI for known vulnerabilities and hardcoded credentials.
