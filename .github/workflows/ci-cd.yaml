@@ -14,16 +14,21 @@ jobs:
     - name: Setup Python 
       uses: actions/setup-python@v7
       with:
-        python-version: 3.11
+        python-version: 3.12
     - name: Install dependencies
       run: pip install -r requirements-dev.txt
     - name: Run Pytest
       run: pytest
     - name: Build Docker image
-      run: docker build -t anuragsingh2207/python-github-gists:0.0.1
+      run: docker build -t anuragsingh2207/python-github-gists:0.0.1 .
     - name: Login to Dockerhub
       uses: docker/login-action@v4
       with:
         username: anuragsingh2207
         password: ${{secrets.DOCKERHUB_TOKEN}}
+    - name: Docker push
+      run: docker push anuragsingh2207/python-github-gists:0.0.1
+
+
+
 
