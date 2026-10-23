@@ -1,0 +1,25 @@
+name: CICD
+on:
+  push:
+    branches: [main, feature/*]
+
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v7
+    - name: Setup Python 
+      uses: actions/setup-python@v7
+    - name: Run Pytest
+      uses: pytest
+    - name: Build Docker image
+      uses: docker build -t anuragsingh2207/python-github-gists:0.0.1
+    - name: Login to Dockerhub
+      uses: docker/login-action@v4
+      with:
+        username: anuragsingh2207
+        password: ${{secrets.DOCKERHUB_TOKEN}}
+

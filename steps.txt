@@ -1,0 +1,18 @@
+### Using minikube with podman driver
+podman machine start 
+
+minikube start --driver=podman
+
+minikube image build -t public-gists-api:0.0.1 .
+minikube image ls --format=table
+
+
+Deployment 
+kubectl create namespace app
+kubectl apply -f k8s/deployment.yaml
+kubectl apply -f k8s/service.yaml
+kubectl get pods,services
+kubectl rollout status deployment/public-gists-api -n app 
+
+Port forwarding
+kubectl port-forward service/public-gists-api 8080:8080 -n app
